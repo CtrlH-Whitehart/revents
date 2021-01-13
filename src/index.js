@@ -1,20 +1,26 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import 'semantic-ui-css/semantic.min.css';
-import './app/layout/styles.css';
-import App from './app/layout/App';
-import reportWebVitals from './reportWebVitals';
+import React from "react";
+import ReactDOM from "react-dom";
+import "semantic-ui-css/semantic.min.css";
+import "./app/layout/styles.css";
+import App from "./app/layout/App";
+import reportWebVitals from "./reportWebVitals";
+import { BrowserRouter } from "react-router-dom";
 
-const root_el = document.getElementById('root')
+const root_el = document.getElementById("root");
 
 function render() {
-  ReactDOM.render(<App />, root_el);
+  ReactDOM.render(
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>,
+    root_el
+  );
 }
 
 if (module.hot) {
-  module.hot.accept('./app/layout/App', function() {
+  module.hot.accept("./app/layout/App", function () {
     setTimeout(render);
-  })
+  });
 }
 
 render();
