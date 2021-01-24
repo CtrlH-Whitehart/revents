@@ -1,9 +1,16 @@
 import cuid from "cuid";
-import React, { useState } from "react";
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { Button, Form, Header, Segment } from "semantic-ui-react";
 import { createEvent, updateEvent } from "../eventActions";
+import { Button, Header, Segment } from "semantic-ui-react";
+import { Formik, Form } from "formik";
+import * as Yup from "yup";
+import CustomTextInput from "../../../app/common/form/CustomTextInput";
+import CustomTextArea from "../../../app/common/form/CustomTextArea";
+import CustomSelectInput from "../../../app/common/form/CustomSelectInput";
+import { categoryData } from "../../../app/api/categoryData";
+import CustomDateInput from "../../../app/common/form/CustomDateInput";
 
 export default function EventForm({ match, history }) {
   const dispatch = useDispatch();
@@ -21,90 +28,96 @@ export default function EventForm({ match, history }) {
     date: "",
   };
 
-  const [values, setValues] = useState(initialValues);
+  const validationSchema = Yup.object({
+    title: Yup.string().required("You must provide a title"),
+    category: Yup.string().required("You must provide a category"),
+    description: Yup.string().required("You must provide a description"),
+    city: Yup.string().required("You must provide a city"),
+    venue: Yup.string().required("You must provide a venue"),
+    date: Yup.string().required("You must provide a date"),
+  });
 
-  function handleFormSubmit() {
-    selectedEvent
-      ? dispatch(updateEvent({ ...selectedEvent, ...values }))
-      : dispatch(
-          createEvent({
-            ...values,
-            id: cuid(),
-            hostedBy: "Bob",
-            attendees: [],
-            hostPhotoUrl: "/assets/user.png",
-          })
-        );
-    history.push("/events");
-  }
-
-  function handleInputChange(e) {
-    const { name, value } = e.target;
-    setValues({ ...values, [name]: value });
-  }
+  // function handleFormSubmit() {
+  //   selectedEvent
+  //     ? dispatch(updateEvent({ ...selectedEvent, ...values }))
+  //     : dispatch(
+  //         createEvent({
+  //           ...values,
+  //           id: cuid(),
+  //           hostedBy: "Bob",
+  //           attendees: [],
+  //           hostPhotoUrl: "/assets/user.png",
+  //         })
+  //       );
+  //   history.push("/events");
+  // }
 
   return (
     <Segment clearing>
-      <Header content={selectedEvent ? "Edit the Event" : "Create new Event"} />
-      <Form onSubmit={handleFormSubmit}>
-        <Form.Field>
-          <input
-            type="text"
-            placeholder="Event Title"
-            name="title"
-            value={values.title}
-            onChange={(e) => handleInputChange(e)}
-          />
-        </Form.Field>
-        <Form.Field>
-          <input
-            type="text"
-            placeholder="Category"
-            name="category"
-            value={values.category}
-            onChange={(e) => handleInputChange(e)}
-          />
-        </Form.Field>
-        <Form.Field>
-          <input
-            type="text"
-            placeholder="Description"
-            name="description"
-            value={values.description}
-            onChange={(e) => handleInputChange(e)}
-          />
-        </Form.Field>
-        <Form.Field>
-          <input
-            type="text"
-            placeholder="City"
-            name="city"
-            value={values.city}
-            onChange={(e) => handleInputChange(e)}
-          />
-        </Form.Field>
-        <Form.Field>
-          <input
-            type="text"
-            placeholder="Venue"
-            name="venue"
-            value={values.venue}
-            onChange={(e) => handleInputChange(e)}
-          />
-        </Form.Field>
-        <Form.Field>
-          <input
-            type="date"
-            placeholder="Date"
-            name="date"
-            value={values.date}
-            onChange={(e) => handleInputChange(e)}
-          />
-        </Form.Field>
+      <Formik
+        initialValues={initialValues}
+        validationSchema={validationSchema}
+        onSubmit={(values) => {
+          selectedEvent
+            ? dispatch(updateEvent({ ...selectedEvent, ...values }))
+            : dispatch(
+                createEvent({
+                  ...values,
+                  id: cuid(),
+                  hostedBy: "Bob",
+                  attendees: [],
+                  hostPhotoUrl: "/assets/user.png",
+                })
+              );
+          history.push("/events");
+        }}
+      >
+        {({ isSubmitting, dirty, isValid }) => (
+          <Form className="ui form">
+            <Header sub color="teal" content="Event Details" />
 
-        <Button type="submit" floated="right" positive content="Submit" />
-        <Button as={Link} to="/events" floated="right" content="Cancel" />
-      </Form>
+            <CustomTextInput name="title" placeholder="Event Title" />
+            <CustomSelectInput
+              name="category"
+              placeholder="Event Category"
+              options={categoryData}
+            />
+            <CustomTextArea
+              name="description"
+              placeholder="Description"
+              rows={3}
+            />
+
+            <Header sub color="teal" content="Event Location Details" />
+            <CustomTextInput name="city" placeholder="City" />
+            <CustomTextInput name="venue" placeholder="Venue" />
+            <CustomDateInput
+              name="date"
+              placeholderText="Event Date"
+              timeFormat="HH:mm"
+              showTimeSelect
+              timeCaption="Time"
+              dateFormat="MMMM d, yyyy h:mm a"
+            />
+
+            <Button
+              loading={isSubmitting}
+              disabled={!isValid || !dirty || isSubmitting}
+              type="submit"
+              floated="right"
+              positive
+              content="Submit"
+            />
+            <Button
+              as={Link}
+              disabled={isSubmitting}
+              to="/events"
+              floated="right"
+              content="Cancel"
+            />
+          </Form>
+        )}
+      </Formik>
     </Segment>
   );
 }

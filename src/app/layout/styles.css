@@ -34,3 +34,7 @@ body {
   height: auto;
   color: white;
 }
+
+.react-datepicker-wrapper {
+  width: 100%;
+}
