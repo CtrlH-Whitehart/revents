@@ -38,3 +38,10 @@ body {
 .react-datepicker-wrapper {
   width: 100%;
 }
+
+.customPlaceInpute {
+  margin-top: 0;
+  position: 'absolute'; 
+  z-index: 1000; 
+  width: '100%';
+}
