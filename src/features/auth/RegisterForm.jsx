@@ -7,33 +7,37 @@ import { Button, Divider, Label } from 'semantic-ui-react';
 import { useDispatch } from 'react-redux';
 import { closeModal } from '../../app/common/modals/modalReducer';
 import { signInUser } from './authAction';
-import { signInWithEmail } from '../../app/firestore/firebaseService';
+import { registerInFirebase, signInWithEmail } from '../../app/firestore/firebaseService';
 import SocialLogin from './SocialLogin';
 
-export default function LoginForm() {
+export default function RegisterForm() {
 	const dispatch = useDispatch();
 
 	return (
-		<ModalWrapper size='mini' header='Sign in to Re-vents'>
+		<ModalWrapper size='mini' header='Register to Re-vents'>
 			<Formik
-				initialValues={{ email: '', password: '' }}
+				initialValues={{ displayName: '', email: '', password: '' }}
 				validationSchema={Yup.object({
+					displayName: Yup.string().required(),
 					email: Yup.string().required().email(),
 					password: Yup.string().required(),
 				})}
 				onSubmit={async (values, { setSubmitting, setErrors }) => {
 					try {
-						await signInWithEmail(values);
-						setSubmitting(false);
+						await registerInFirebase(values);
 						dispatch(closeModal());
 					} catch (error) {
-						setErrors({ auth: 'The username or password is invalid.' });
+                        setErrors({ auth: error.message})
 						setSubmitting(false);
 					}
 				}}
 			>
 				{({ isSubmitting, isValid, dirty, errors }) => (
 					<Form className='ui form'>
+						<CustomTextInput
+							name='displayName'
+							placeholder='Display Name'
+						/>
 						<CustomTextInput
 							name='email'
 							placeholder='Email Address'
@@ -43,9 +47,10 @@ export default function LoginForm() {
 							placeholder='Password'
 							type='password'
 						/>
-						{errors.auth && (
+                        {errors.auth && (
 							<Label
-								basic
+                                basic
+                                key='red'
 								color='red'
 								style={{ marginBottom: 10 }}
 								content={errors.auth}
@@ -58,7 +63,7 @@ export default function LoginForm() {
 							fluid
 							size='large'
 							color='teal'
-							content='Login'
+							content='Register'
 						/>
 						<Divider horizontal>Or</Divider>
 						<SocialLogin />
