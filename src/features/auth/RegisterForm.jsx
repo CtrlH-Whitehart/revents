@@ -6,8 +6,7 @@ import CustomTextInput from '../../app/common/form/CustomTextInput';
 import { Button, Divider, Label } from 'semantic-ui-react';
 import { useDispatch } from 'react-redux';
 import { closeModal } from '../../app/common/modals/modalReducer';
-import { signInUser } from './authAction';
-import { registerInFirebase, signInWithEmail } from '../../app/firestore/firebaseService';
+import { registerInFirebase } from '../../app/firestore/firebaseService';
 import SocialLogin from './SocialLogin';
 
 export default function RegisterForm() {

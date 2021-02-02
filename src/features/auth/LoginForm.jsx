@@ -6,7 +6,6 @@ import CustomTextInput from '../../app/common/form/CustomTextInput';
 import { Button, Divider, Label } from 'semantic-ui-react';
 import { useDispatch } from 'react-redux';
 import { closeModal } from '../../app/common/modals/modalReducer';
-import { signInUser } from './authAction';
 import { signInWithEmail } from '../../app/firestore/firebaseService';
 import SocialLogin from './SocialLogin';
 
