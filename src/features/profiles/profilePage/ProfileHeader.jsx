@@ -21,7 +21,7 @@ export default function ProfileHeader({ profile, isCurrentUser }) {
 								avatar
 								size='small'
 								src={
-									profile.displayPhotoURL ||
+									profile.photoURL ||
 									'/assets/user.png'
 								}
 							/>
