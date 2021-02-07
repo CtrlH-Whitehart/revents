@@ -20,8 +20,8 @@ export default function SignedOutMenu() {
 
 	return (
 		<Menu.Item position='right'>
-			<Image avatar spaced='right' src={currentUserProfile.photoURL || '/assets/user.png'} />
-			<Dropdown pointing='top left' text={currentUserProfile.displayName}>
+			<Image avatar spaced='right' src={currentUserProfile?.photoURL || '/assets/user.png'} />
+			<Dropdown pointing='top left' text={currentUserProfile?.displayName}>
 				<Dropdown.Menu>
 					<Dropdown.Item
 						as={Link}
@@ -31,7 +31,7 @@ export default function SignedOutMenu() {
 					/>
 					<Dropdown.Item
 						as={Link}
-						to={`/profile/${currentUserProfile.id}`}
+						to={`/profile/${currentUserProfile?.id}`}
 						text='My Profile'
 						icon='user'
 					/>
